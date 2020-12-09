@@ -1,0 +1,59 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 26px;
+
+  letter-spacing: -0.015em;
+}
+
+.group-select {
+  width: 260px;
+  height: 60px;
+  left: 0px;
+  top: 304px;
+
+  background: rgba(196, 196, 196, 0.4);
+  border: 2px solid rgba(196, 196, 196, 0.4);
+  box-sizing: border-box;
+  border-radius: 0px 12px 12px 0px;
+
+  font-family: Montserrat;
+  font-style: normal;
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  color: rgba(37, 182, 220);
+}
+
+.group-selected {
+  width: 260px;
+  height: 60px;
+  left: 0px;
+  top: 304px;
+
+  background: rgba(196, 196, 196);
+  border: 2px solid rgba(196, 196, 196);
+  box-sizing: border-box;
+  border-radius: 0px 12px 12px 0px;
+  
+  font-family: Montserrat;
+  font-style: bold;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 32px;
+  letter-spacing: -0.015em;
+
+  color: rgba(37, 182, 250, 0.9);
+}
+
+.group-outline {
+  border: 20px solid rgba(37, 182, 250, 0.47);
+  box-sizing: border-box;
+  filter: blur(15px);
+}
