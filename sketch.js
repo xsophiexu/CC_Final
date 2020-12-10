@@ -40,6 +40,13 @@ let offset;
 let score = 0;
 let highscore = 0;
 
+function restart(){
+  score = 0;
+  song1 = [];
+  beginSong();
+  mode = undefined;
+}
+
 const modelParams = {
     flipHorizontal: true,
     maxNumBoxes: 2,      // max number of boxes to detect
@@ -114,6 +121,8 @@ function runDetection() {
 
 function setup() {
   createCanvas(800, 700);
+  textFont('Montserrat');
+  textStyle('normal');
   img = loadImage('blue.jpg');
   mask = loadImage('mask2.png');
   noStroke();
@@ -124,22 +133,16 @@ function setup() {
   poseNet.on('pose', gotPoses);
   
     
-  sButton = createButton('Start');
+  //sButton = createButton('Start');
   button1 = createButton('Timed');
   button2 = createButton('Free-Play');
     button1.hide();
     button2.hide();
-    sButton.hide();
+    //sButton.hide();
   //button3 = createButton('Dodge');
-  
-  
   bassSynth = new Tone.MembraneSynth().toMaster();
   Tone.Transport.start();
-  //bassSynth.triggerAttackRelease('G4', '8n');
-  song1.push (new Character(1, "G4"));
-  song1.push (new Character(2, "E4"));
-  song1.push (new Character(3, "C3"));
-  song1.push (new Character(4, "B4"));
+  beginSong();
   
   freePlay.push (new gamestate2("C3", "white", 0));
   freePlay.push (new gamestate2("C#3", "black", 0));
@@ -147,7 +150,7 @@ function setup() {
   freePlay.push (new gamestate2("D#3", "black", 1));
   freePlay.push (new gamestate2("E3", "white", 2));
   freePlay.push (new gamestate2("F3", "white", 3));
-  freePlay.push (new gamestate2("Gb3", "black", 4));
+  freePlay.push (new gamestate2("F#3", "black", 4));
   freePlay.push (new gamestate2("G3", "white", 4));
   freePlay.push (new gamestate2("G#3", "black", 5));
   freePlay.push (new gamestate2("A3", "white", 5));
@@ -166,35 +169,40 @@ function setup() {
   freePlay.push (new gamestate2("A4", "white", 12));
   freePlay.push (new gamestate2("A#4", "black", 12));
   freePlay.push (new gamestate2("B4", "white", 13));
-  //1-15 C4 C#4 D D#4 E4 F4 Gb4 G G#4 A A#4 B
+}
+
+function beginSong(){
+  //bassSynth.triggerAttackRelease('G4', '8n');
+  song1.push (new Character(1, "G4"));
+  song1.push (new Character(2, "E4"));
+  song1.push (new Character(3, "C3"));
+  song1.push (new Character(4, "B4"));
 }
 
 
 function draw() {
 if(videoLoaded == false){
-  image(img, 0, 0, 945, 700);
-  textFont('Montserrat');
-  textStyle('normal');
+  image(img, 0, 0, 1120, 700);
   textAlign(CENTER);
   fill(255);
   textSize(40);
   if (state === 0){
-    text('Loading...', 300, 380);
+    text('Loading...', 400, 380);
     textSize(25);
-    text('If lost check the bottom for instructions', 400, 520);
+    text('If lost check the bottom for instructions', 400, 420);
   } else if (state === 1) {
-    text('Loaded', 400, 480);
+    text('Loaded', 400, 380);
   } else if (state === 2) {
     textSize(40);
     textSize(34);
-    text('Please enable video and reload', 400, 480);
+    text('Please enable video and reload', 400, 380);
     startVideo();
   }
   textAlign(LEFT);
 }
   if (videoLoaded) {
   background(0);
-  image(img, 0, 0, 945, 700);
+  image(img, 0, 0, 1120, 700);
   push();
   translate(width,0);
   scale(-1, 1);
@@ -217,14 +225,19 @@ if(videoLoaded == false){
     
     button1.show();
     button2.show();
-    sButton.show();
+    //sButton.show();
+    fill(1, 75, 114);
+    strokeWeight(2.5);
+    rect(600, 100, 120, 50, 4);
+    fill(255);
+    textSize(26);
+    text('Start', 636, 133);
+
       textAlign(RIGHT);
       textSize(18);
       fill(255);
       if (xCord != null){
         text('Move your hands to select a mode and press start', 780, 680);
-      } else {
-        text('Raise your hands up in the air like you just do not care!', 780, 680);
       }
       textAlign(LEFT);
     if (xCord > 0 && xCord < 260 && yCord > 350 && yCord < 410){
@@ -248,20 +261,19 @@ if(videoLoaded == false){
       button2.class('group-selected');
       //button3.class('group-select');
     }
-    sButton.position(520, 200);
-    if ((xCord > 520 && xCord < 700 && yCord > 200 && yCord < 230) || (xCord2 > 520 && xCord2 < 700 && yCord2 > 200 && yCord2 < 230)){
+    if ((xCord > 600 && xCord < 720 && yCord > 100 && yCord < 150) || (xCord2 > 600 && xCord2 < 720 && yCord2 > 100 && yCord2 < 150)){
       if (mode == 'Timed'){
         currentTime = millis();
         gamestate = 1;
         button1.hide();
         button2.hide();
-        sButton.hide();
+        //sButton.hide();
       } else if (mode == 'Free-Play') {
         currentTime = millis();
         gamestate = 2;
         button1.hide();
         button2.hide();
-        sButton.hide();
+        //sButton.hide();
       }
   }
   }
@@ -280,8 +292,6 @@ if(videoLoaded == false){
     }} if (timePassed > (timer*1000)){
       gamestate = 1.5;
     }
-    textFont('Montserrat');
-    textStyle('normal');
     fill(255);
     textSize(25);
     text('Score: ' + score, 40, 640);
@@ -295,10 +305,9 @@ if(videoLoaded == false){
       fill(255);
       if (xCord != null){
         text('Eliminate as many objects as you can', 780, 680);
-      } else {
-        text('Raise your hands up in the air like you just do not care', 780, 680);
       }
     textAlign(LEFT);
+
     
     highscore = localStorage.getItem('Highest');
     if (score > highscore) {
@@ -308,12 +317,36 @@ if(videoLoaded == false){
   }
   
   if (gamestate === 1.5){
-    fill(0);
+    fill(1, 75, 114);
+    strokeWeight(2.5);
+    rect(600, 100, 120, 50, 4);
+    rect(450, 100, 120, 50, 4);
+    fill(255);
+    textSize(24);
+    text('Back', 635, 133);
+    text('Restart', 475, 133);
+    
+    if ((xCord > 600 && xCord < 720 && yCord > 100 && yCord < 150) || (xCord2 > 600 && xCord2 < 720 && yCord2 > 100 && yCord2 < 150)){
+      currentTime = millis();
+      restart();
+      gamestate = 0;
+    } else if ((xCord > 450 && xCord < 570 && yCord > 100 && yCord < 150) || (xCord2 > 450 && xCord2 < 570 && yCord2 > 100 && yCord2 < 150)){
+      restart();
+      currentTime = millis();
+      gamestate = 1;
+    }
+    
+    fill(230);
+    stroke('rgba(37, 182, 250, 0.5)');
+    strokeWeight(4);
+    rect(40, 450, 280, 80, 3);
+    noStroke();
     textAlign(CENTER);
-    textSize(25);
-    text('Highscore: ' + highscore, 300, 320);
-    rect(500, 400, 70, 70); //continue
+    textSize(30);
+    fill(0);
+    text('Highscore: ' + highscore, 180, 498);
     textAlign(LEFT);
+
   }
     
   if (gamestate === 2){
@@ -333,6 +366,18 @@ if(videoLoaded == false){
     for (let char of freePlay){
       char.clicked();
     }
+    
+    fill(1, 75, 114);
+    strokeWeight(2.5);
+    rect(600, 100, 120, 50, 4);
+    fill(255);
+    textSize(24);
+    text('Back', 635, 133);
+    
+    if ((xCord > 600 && xCord < 720 && yCord > 100 && yCord < 150) || (xCord2 > 600 && xCord2 < 720 && yCord2 > 100 && yCord2 < 150)){
+      restart();
+      gamestate = 0;
+    }
   }
   
   if (gamestate === 1) {
@@ -351,19 +396,25 @@ if(videoLoaded == false){
   if(xCord2 != null && yCord2 != null){
     ellipse(xCord2, yCord2, width/15-offset);
   }
-  
+  if (xCord != null){
+  } else {
+    fill(255);
+    textAlign(RIGHT);
+    textSize(18);
+    text('Raise your hands up in the air like you just do not care!', 780, 680);
+    textAlign(LEFT);
+      }
   /*stroke('rgba(37, 182, 250, 0.5)');
   strokeWeight(50);
   noFill();
   rect(0, 0, 800, 600);*/
-  //outline = rect; outline.class('group-outline');
 }}
 
 class Character {
   constructor (id, note) {
     this.s = 25;
-    this.x = random(50, 550);
-    this.y = random(50, 420);
+    this.x = random(50, 750);
+    this.y = random(50, 630);
     this.c = random(80, 225);
     this.id = id;
     this.alive = true;
